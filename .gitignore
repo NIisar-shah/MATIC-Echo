@@ -1,0 +1,34 @@
+# Data and generated artifacts
+raw_data/
+data/
+EchoNet-Dynamic/
+CAMUS/
+outputs/
+output/
+experiments/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
