@@ -1,4 +1,4 @@
-# CVC_MAMBA runtime dependencies
+# MATIC-Echo runtime dependencies
 # Recommended Python: 3.10 or 3.11
 #
 # PyTorch GPU note
