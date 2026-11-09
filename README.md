@@ -2,41 +2,67 @@
 
 **Measurement-Aligned Temporal and Interval-Constrained Echo Segmentation**
 
-MATIC-Echo is a research framework for left-ventricular segmentation in echocardiographic videos under sparse end-diastolic (ED) and end-systolic (ES) supervision. The method combines phase-complete dual-view temporal sampling with cardiac-trajectory constraints designed to improve spatial delineation, temporal consistency, and cross-dataset generalization.
+MATIC-Echo is a research framework for left-ventricular segmentation in echocardiographic videos with sparse end-diastolic (ED) and end-systolic (ES) annotations. It combines phase-complete dual-view sampling, a shared EchoMamba segmentation pathway, and interval-masked cardiac-trajectory constraints.
 
-## Repository status
+## Public research snapshot
 
-> **Initial public scaffold.** The verified training, evaluation, and model source code is being consolidated from the experimental GPU server and will be released here after reproducibility checks. Local legacy code is intentionally excluded from this initial commit.
+This repository contains a curated snapshot of the original implementation used to develop MATIC-Echo. The current public files document the central technical contributions while the manuscript is under peer review.
 
-The current repository contains only:
+Included now:
 
-- this project overview;
-- a provisional Python dependency specification; and
-- repository hygiene rules for excluding datasets, checkpoints, and generated outputs.
+- the EchoMamba model implementation;
+- EchoNet-Dynamic data loading and dual-phase uniform sampling;
+- interval-aware trajectory consistency and boundary-aware objectives;
+- the paired statistical-analysis procedure used for fixed-checkpoint comparisons.
+
+Not included in this review-stage snapshot:
+
+- model checkpoints or learned weights;
+- complete training entry points and resume logic;
+- experiment-specific configuration files;
+- raw or processed datasets; and
+- generated outputs, logs, or unpublished result bundles.
+
+The complete verified training and inference package, frozen configurations, and eligible pretrained checkpoints will be released upon acceptance of the associated manuscript. Confidential access can be provided to editors and peer reviewers when required. See [CODE_AVAILABILITY.md](CODE_AVAILABILITY.md).
 
 ## Method overview
 
-MATIC-Echo is built around four components:
+1. **Dual-phase uniform sampling** constructs an ED-anchored view and an ES-anchored view for every video. Each view preserves uniform temporal spacing while guaranteeing that its target annotated phase lies on the sampling grid.
+2. **Shared EchoMamba segmentation** applies the same model parameters to both temporal views and produces a mask sequence for every input frame.
+3. **Measurement-aligned cardiac consistency** converts the soft masks into a differentiable cavity-area trajectory and constrains only the ED--ES interval with area-bracket, direction, and curvature terms.
+4. **Sparse phase supervision** applies segmentation loss to annotated phases present in each view. The trajectory regularizer is used during training only and adds no inference-time parameters.
 
-1. **Dual-phase uniform sampling** constructs ED-anchored and ES-anchored clips so that both annotated cardiac phases contribute to training without sacrificing uniform temporal spacing.
-2. **Shared EchoMamba segmentation** processes both views with the same parameters and produces a mask sequence for every input frame.
-3. **Measurement-aligned cardiac consistency** converts soft masks into a differentiable cavity-area trajectory and applies interval-aware physiologic constraints.
-4. **Sparse phase supervision** applies segmentation loss only at annotated phases present in each sampled clip, while temporal regularization uses the complete predicted trajectory during training.
+## Repository structure
 
-The trajectory regularizer is used only during training and adds no inference-time parameters.
+```text
+MATIC-Echo/
+├── models/
+│   └── echomamba.py
+├── datasets/
+│   ├── echonet_dataset.py
+│   └── dual_phase_uniform_echonet.py
+├── engine/
+│   ├── dual_phase_uniform_loss.py
+│   └── boundary_aware_loss.py
+├── evaluation/
+│   └── paired_test_analysis.py
+├── CODE_AVAILABILITY.md
+├── requirements.txt
+└── README.md
+```
 
 ## Data
 
-The experiments use publicly available echocardiography datasets, including:
+The experiments use publicly available echocardiography datasets:
 
 - [EchoNet-Dynamic](https://echonet.github.io/dynamic/)
 - [CAMUS](https://www.creatis.insa-lyon.fr/Challenge/camus/)
 
-Datasets are **not redistributed** in this repository. Users must obtain them from their official providers and comply with the corresponding licenses and terms of use.
+The datasets are not redistributed here. Users must obtain them from the official providers and comply with their licences and terms of use.
 
-## Installation
+## Environment
 
-The finalized environment file will accompany the verified code release. For the current scaffold:
+The research environment used Python 3.11, PyTorch 2.4.1, and CUDA 12.1 on an NVIDIA Quadro GV100. Install a PyTorch build compatible with your local CUDA driver before installing the remaining dependencies:
 
 ```bash
 python -m venv .venv
@@ -45,25 +71,21 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Install the PyTorch build appropriate for the local CUDA driver when GPU acceleration is required. The main experiments were developed with Python 3.11, PyTorch 2.4.1, and CUDA 12.1 on an NVIDIA Quadro GV100.
-
-## Planned release
-
-The verified release will add:
-
-- model and loss implementations;
-- data preparation and phase-aware sampling;
-- reproducible configuration files;
-- training and checkpoint-resume scripts;
-- internal and external evaluation protocols;
-- statistical analysis and publication-figure generation; and
-- pretrained checkpoints where redistribution is permitted.
+The current snapshot is provided for method inspection and is not yet the complete end-to-end reproduction package.
 
 ## Citation
 
-The manuscript citation will be added after publication. Until then, please cite this repository by its GitHub URL and release version.
+The manuscript citation and archival release identifier will be added when available. Until then, please cite the repository URL and the exact Git commit used:
+
+```text
+MATIC-Echo: Measurement-Aligned Temporal and Interval-Constrained Echo Segmentation.
+https://github.com/NIisar-shah/MATIC-Echo
+```
+
+## Rights and reuse
+
+No open-source licence has yet been assigned to this review-stage snapshot. Copyright remains with the contributors, and no permission to redistribute or create derivative works is granted by default. A release licence will be added with the complete post-acceptance package.
 
 ## Contact
 
-For questions about the project, please use the GitHub issue tracker after the verified code release.
-
+Please use the GitHub issue tracker for repository-related questions.

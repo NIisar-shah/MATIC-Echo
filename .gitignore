@@ -7,9 +7,18 @@ outputs/
 output/
 experiments/
 checkpoints/
+publication_audit/
+exports/
 *.pt
 *.pth
 *.ckpt
+*.onnx
+*.npz
+*.npy
+*.avi
+*.mp4
+*.nii
+*.nii.gz
 
 # Python
 __pycache__/
@@ -29,6 +38,9 @@ Thumbs.db
 
 # Logs and temporary files
 *.log
+*.zip
+*.tar
+*.tar.gz
 tmp/
 temp/
 
